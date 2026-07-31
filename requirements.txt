@@ -1,0 +1,25 @@
+# Direct dependencies, pinned to the versions that produced the results in reports/.
+# requirements-lock.txt holds the full pip freeze if an exact environment is needed.
+#
+# Python 3.12.10.
+#
+# Note on pandas: this is a 3.x environment, not 2.x. Copy-on-write is the default, so code
+# written against pandas 2 habits may behave differently. The pins here are the contract.
+
+# Data and numerics
+pandas==3.0.5
+numpy==2.5.1
+scipy==1.18.0
+
+# Models
+scikit-learn==1.9.0
+statsmodels==0.14.6
+xgboost==3.3.0
+
+# Charts
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# Notebooks
+jupyter==1.1.1
+ipykernel==7.3.0

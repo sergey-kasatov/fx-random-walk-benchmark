@@ -1,0 +1,23 @@
+# Data - kept local, not pushed
+data/raw/*
+data/processed/*
+!data/**/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Run artefacts. The results in reports/*.csv are committed on purpose, so the findings are
+# readable without running anything; the console log of a particular run is not.
+reports/backtest_run.log
+
+# Editors and OS
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
