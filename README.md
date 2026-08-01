@@ -107,24 +107,57 @@ only the second answers the question "do they move together".
 
 ---
 
+## What being wrong costs, in money
+
+The brief asks for a risk assessment, so the measured errors are priced against a concrete exposure:
+**USD 10,000,000 converted at the forecast horizon**, planned on the naive forecast. The numbers scale
+linearly, so any other ticket size is a multiplication.
+
+| Horizon | 5% adverse case, SGD | 5% adverse case, CNY | Worst observed, SGD | Worst observed, CNY |
+|---|---|---|---|---|
+| 1 day | -44,000 | -36,000 | -236,000 | -123,000 |
+| 5 days | -111,000 | -91,000 | -233,000 | -171,000 |
+| 21 days | -196,000 | -186,000 | -389,000 | -401,000 |
+
+**The 95th percentile is roughly normal. The tail beyond it is not.**
+
+![risk tail](reports/figures/03_risk_tail.png)
+
+The empirical 5 percent quantile sits within about ten percent of what a normal distribution predicts, so
+a normal assumption is adequate for routine limit-setting. Then the worst single day on the Singapore
+dollar turns out to be a **7.9 sigma** move - which a normal distribution rates at one occurrence every
+2.4 trillion years of trading, and which happened inside a four-year sample. Excess kurtosis is 7.0 at the
+daily horizon and falls to 0.0 at twenty-one days, so **the fat tail is a short-horizon problem**, which is
+exactly the horizon at which a desk transacts.
+
+**And the cost of choosing a model anyway**, on that same USD 10m ticket converted monthly:
+
+| Choice instead of the naive forecast | Extra deviation per year, SGD | Extra per year, CNY |
+|---|---|---|
+| XGBoost on returns | +128,000 | +111,000 |
+| XGBoost on levels | +249,000 | **+615,000** |
+
+The irreducible cost of FX uncertainty on this exposure is about 1.13 million a year, and no model reduced
+it. The levels model also widens the 5 percent worst case, from -196,000 to -255,000 on SGD, so the usual
+defence that sophistication earns its keep in the extremes does not hold either.
+
 ## What a bank should actually do with this
 
 1. **Do not buy or build a point forecast of the rate.** The one question to ask any vendor demonstrating
    an FX model is its RMSE ratio against a naive baseline, with a significance test attached. Everything
    here failed that test.
 2. **Use the naive forecast as the planning number and spend the effort on the interval.** It is free,
-   cannot be overfitted, carries no model risk, and was not beaten. What it lacks is a range, and the
-   measured errors supply one directly: one day ahead on SGD/USD, RMSE 0.0041; twenty-one days ahead,
-   0.0166 - four times larger over twenty-one times the horizon, which is the square-root-of-time scaling
-   a random walk implies and a useful sanity check on any risk number the desk is handed.
-3. **Point the modelling budget at volatility.** The size of the next move carries structure that its
+   cannot be overfitted, carries no model risk, and was not beaten. The table above is the interval.
+3. **Size the stress test off the empirical tail, not off a standard deviation.** A normal-based risk
+   system rates the worst day in this sample as impossible.
+4. **Point the modelling budget at volatility.** The size of the next move carries structure that its
    direction does not. On SGD a plain 60-day rolling estimate predicts next month's realised volatility at
    r = 0.62 and beats a constant assumption by 38 percent. On CNY it barely works, which is the limit of
    the claim rather than a detail to leave out.
 
 The uncomfortable version, which is also the honest one: the correct deliverable for a brief asking for an
 FX forecasting model is **a recommendation not to build one**, plus the measurement that justifies the
-alternative.
+alternative and the price of ignoring it.
 
 ---
 
@@ -166,7 +199,8 @@ data/processed/      cleaned series and backtest output, not committed
 notebooks/
   01_data_quality_audit.ipynb                 five findings, two of which contradict the brief
   02_eda_trend_seasonality_volatility.ipynb   the brief's four questions, plus "is this a random walk?"
-  03_backtest_models_vs_random_walk.ipynb     the comparison, the business conclusion, the limitations
+  03_backtest_models_vs_random_walk.ipynb     the comparison, the risk assessment in money, the
+                                              business conclusion and the limitations
 src/
   data.py         loading and the cleaning decisions, each with its reason
   features.py     leak-free supervised framing, levels and returns
