@@ -239,9 +239,8 @@ with no parameters, is very unlikely to move.
 ## Data
 
 Daily exchange rates from 2000-01-03 to 2019-12-31: 5,217 business days with not one weekday missing.
-Singapore dollars per US dollar and Chinese yuan per US dollar. Supplied as coursework for the MSIT
-"Advanced DS & AI Portfolio Projects" module, Finance brief. The raw file is kept local and is not
-committed.
+Singapore dollars per US dollar and Chinese yuan per US dollar. Supplied with a Finance brief. The raw
+file is kept local and is not committed.
 
 ## Environment
 
